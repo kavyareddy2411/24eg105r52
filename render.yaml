@@ -1,0 +1,27 @@
+# Render Blueprint: New + > Blueprint > pick this GitHub repo.
+# Deploys the Spring Boot backend from its Dockerfile. The frontend goes to Netlify.
+# Render has no managed MySQL, so DB_URL points to an external MySQL (see README).
+services:
+  - type: web
+    name: parking-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: DB_URL
+        sync: false          # jdbc:mysql://HOST:PORT/DBNAME?sslMode=REQUIRED
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true  # Render creates a strong random value
+      - key: ADMIN_EMAIL
+        value: admin@college.edu
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false          # your Netlify URL, e.g. https://your-site.netlify.app
